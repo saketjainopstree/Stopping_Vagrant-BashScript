@@ -1,0 +1,24 @@
+#!/bin/bash 
+NOW=$(date +"%F").log
+exec &> ${NOW}
+
+echo -e "\n---------- STARTING POWERING OFF VAGRANTS --------------"
+
+vagrant global-status | grep running | awk '{print $5}' > /tmp/run.out
+
+while IFS='' read -r line 
+do
+        DIR=$( echo ${line} | cut -d/ -f5 )
+        while   IFS= read -r VAR
+        do
+                if [[ ${VAR} == ${DIR} ]] ; then
+                        cd ${line} && pwd
+                        echo -e "Exception Server, moving to next .... \n"
+                else
+                        echo "else condition"
+                        # cd ${i} && vagrant halt
+                        # vagrant status 
+                fi
+        done < "/home/opstree/scripts/exception.list"
+done < "/tmp/run.out"
+rm /tmp/run.out
